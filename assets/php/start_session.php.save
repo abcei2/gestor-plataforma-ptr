@@ -1,0 +1,59 @@
+<?php
+	include ('PhpMySQL.php'); //Connect BD
+
+	session_start(); //Start session
+		
+	unset($_SESSION['SESS_MEMBER_ID']);	//Unset the variables stored in session (CIERRA SESIONES PASADAS)
+	unset($_SESSION['SESS_MEMBER_PERFIL']);
+	unset($_SESSION['SESS_MEMBER_NOMBRE']);
+	
+	$conexion = new Database();
+	$enable = "true";
+	
+	/*
+	$user = "username";
+	$password = "password";
+	$query = "SELECT AES_ENCRYPT('$password',MD5('$user')) AS PASSENCRYPT";
+	$queryResult = mysql_query($query);
+	$TestVar = mysql_fetch_array($queryResult);
+	print_r ($TestVar);
+	//echo $queryResult;
+	
+	$queryPass = "SELECT CLAVE FROM ~~NAME_TABLE_USERS~~ WHERE USUARIO='password'";
+	$queryResultPass = mysql_query($queryPass);
+	$testPass = mysql_fetch_array($queryResultPass);
+	print_r ($testPass);
+	*/
+		
+	function userlogin($user, $password)
+	{	
+		//$query = "SELECT AES_ENCRYPT('$password',MD5('$user')) AS PASSENCRYPT";
+		//$queryResult = mysql_query($query); 
+		//if (mysql_num_rows($queryResult)>0)
+			{
+		//		$tmp = mysql_fetch_assoc($queryResult);
+		//		$passencrypt = $tmp['PASSENCRYPT'];
+			}
+		
+		$sql = "SELECT * FROM MR_USUARIOS WHERE USUARIO='".$user."' AND CLAVE='".$password."'";
+		$sql = mysql_query($sql);
+
+		if (mysql_num_rows($sql)>0)
+			{
+				//Login Successful			
+				session_regenerate_id();
+				$member = mysql_fetch_assoc($sql);
+				$_SESSION['SESS_MEMBER_ID'] = $member['ID_USUARIO'];
+				$_SESSION['SESS_MEMBER_PERFIL'] = $member['PERFIL'];
+				$_SESSION['SESS_MEMBER_NOMBRE'] = $member['USUARIO'];
+				Header("Location: Home/home.php"); 
+			}
+		else 
+			{	
+				$enable = "false";
+				return  $enable;
+			}		
+	$conexion->close(); //Cerrar conexión con BD
+	//mysql_close($conexion); //Cerrar conexión con BD
+	}
+?>
